@@ -11,14 +11,25 @@ import ContactList from './ContatctList/ContactList';
 
 export default class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const localContacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(localContacts);
+    // Load contacts from local storage on component mounting.
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Save contacts to local storage when they change.
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   // The method that adds a new contact to the list of contacts
   addContact = newContact => {
